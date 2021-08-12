@@ -18,15 +18,15 @@ namespace Free_Energy {
 
         [HarmonyPrefix]
         [UsedImplicitly]
-        public static bool Prefix(ref PowerPlant __instance, ref bool __result, ref float ___m_nextFuelCheck, ref OnlineCargo ___m_cargo) {
+        public static bool Prefix(ref PowerPlant __instance, ref bool __result, ref float ___m_nextFuelCheck) {
             if (Time.time < ___m_nextFuelCheck) {
                 __result = false;
                 return false;
             }
             foreach (var itemDefinition in __instance.Fuel) {
-                if (itemDefinition != null && ___m_cargo != null) {
+                if (itemDefinition != null) {
                     var num    = Math.Max(__instance.FuelItemPreloadCount, 1);
-                    var energy = (float)POWER_PLANT_GET_ENERGY.Invoke(__instance, new object[] { itemDefinition });
+                    var energy = (float) POWER_PLANT_GET_ENERGY.Invoke(__instance, new object[] { itemDefinition });
                     __instance.StoredFuelEnergy += energy * __instance.FuelEfficiency * num;
                     __result                    =  true;
                     return false;
