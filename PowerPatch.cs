@@ -8,12 +8,10 @@ namespace Free_Energy {
     [HarmonyPatch]
     [UsedImplicitly]
     public static class PowerPatch {
-        private static readonly MethodInfo POWER_PLANT_GET_ENERGY = typeof(PowerPlant).GetMethod("GetEnergy", BindingFlags.NonPublic | BindingFlags.Instance);
-
         [HarmonyTargetMethod]
         [UsedImplicitly]
         public static MethodBase TargetMethod() {
-            return typeof(PowerPlant).GetMethod("LoadFuel", BindingFlags.NonPublic | BindingFlags.Instance);
+            return typeof(PowerPlant).GetMethod(nameof(PowerPlant.LoadFuel), BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
         [HarmonyPrefix]
@@ -26,7 +24,7 @@ namespace Free_Energy {
             foreach (var itemDefinition in __instance.Fuel) {
                 if (itemDefinition != null) {
                     var num    = Math.Max(__instance.FuelItemPreloadCount, 1);
-                    var energy = (float) POWER_PLANT_GET_ENERGY.Invoke(__instance, new object[] { itemDefinition });
+                    var energy = __instance.GetEnergy(itemDefinition);
                     __instance.StoredFuelEnergy += energy * __instance.FuelEfficiency * num;
                     __result                    =  true;
                     return false;
